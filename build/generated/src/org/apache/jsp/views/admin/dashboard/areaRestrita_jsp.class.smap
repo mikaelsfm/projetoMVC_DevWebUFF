@@ -1,0 +1,14 @@
+SMAP
+areaRestrita_jsp.java
+JSP
+*S JSP
+*F
++ 0 areaRestrita.jsp
+views/admin/dashboard/areaRestrita.jsp
+*L
+1,16:45
+17:61,3
+18,3:64
+21,4:68
+24,62:72
+*E
