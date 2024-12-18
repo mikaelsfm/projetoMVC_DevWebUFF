@@ -45,7 +45,7 @@ public class CategoriaDAO implements Dao<Categoria> {
     }
 
     @Override
-    public void insert(Categoria t) {
+    public void inserir(Categoria t) {
 
         Conexao conexao = new Conexao();
         try {

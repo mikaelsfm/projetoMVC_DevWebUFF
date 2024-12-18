@@ -100,7 +100,7 @@ public class CategoriaController extends HttpServlet {
             try {
                 switch (btEnviar) {
                     case "Incluir":
-                        categoriaDAO.insert(categoria);
+                        categoriaDAO.inserir(categoria);
                         request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                         break;
                     case "Alterar":

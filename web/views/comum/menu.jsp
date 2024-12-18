@@ -14,6 +14,12 @@
                         Administrador AdministradorLogado = (Administrador) session.getAttribute("administrador");
                         if (AdministradorLogado != null) { %>
                             <a class="nav-link" href="/aplicacaoMVC/admin/dashboard">Dashboard</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/AlunoController?acao=Listar">Alunos</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/ProfessorController?acao=Listar">Professores</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/AdministradorController?acao=Listar">Administrador</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/DisciplinaController?acao=Listar">Disciplinas</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/TurmaController?acao=Listar">Turmas</a>
+                            <a class="nav-link" href="/aplicacaoMVC/admin/RelatorioController?acao=Listar">Relatório</a>
                             <a class="nav-link" href="/aplicacaoMVC/admin/CategoriaController?acao=Listar">Categorias</a>
                             <a class="nav-link" href="/aplicacaoMVC/admin/logOut">Logout</a>
                 <%  } else { %>

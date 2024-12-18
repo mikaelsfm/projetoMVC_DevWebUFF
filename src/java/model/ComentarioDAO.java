@@ -50,7 +50,7 @@ public class ComentarioDAO implements Dao<Comentario> {
     }
 
     @Override
-    public void insert(Comentario t) {
+    public void inserir(Comentario t) {
 
         Conexao conexao = new Conexao();
         try {

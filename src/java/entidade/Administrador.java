@@ -25,7 +25,7 @@ public class Administrador {
         this.nome = "";
         this.cpf = "";
         this.endereco = "";
-        this.senha = "";;
+        this.senha = "";
     }
 
     public int getId() {
