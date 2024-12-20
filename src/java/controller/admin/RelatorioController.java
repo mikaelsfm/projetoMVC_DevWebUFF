@@ -1,27 +1,27 @@
 package controller.admin;
 
-import entidade.Relatorio;
+import model.RelatorioDAO;
 import java.io.IOException;
-import java.util.ArrayList;
-import javax.servlet.RequestDispatcher;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.RelatorioDAO;
 
-@WebServlet("/admin/RelatorioController")
+@WebServlet(name = "RelatorioController", urlPatterns = {"/admin/RelatorioController"})
 public class RelatorioController extends HttpServlet {
+
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RelatorioDAO relatorioDAO = new RelatorioDAO();
-        ArrayList<Relatorio> relatorio = relatorioDAO.gerarRelatorio();
-
-        request.setAttribute("relatorio", relatorio);
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/admin/relatorio/formRelatorio.jsp");
-        dispatcher.forward(request, response);
+        try {
+            List<Map<String, Object>> relatorio = relatorioDAO.gerarRelatorio();
+            request.setAttribute("relatorio", relatorio);
+            request.getRequestDispatcher("/views/admin/relatorio/formRelatorio.jsp").forward(request, response);
+        } catch (Exception e) {
+            throw new ServletException("Erro ao gerar o relatório", e);
+        }
     }
 }

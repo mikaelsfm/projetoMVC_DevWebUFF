@@ -75,4 +75,16 @@ public class Turma {
     public void setNota(BigDecimal nota) {
         this.nota = nota;
     }
+    
+    @Override
+public String toString() {
+    return "Turma{" +
+            "id=" + id +
+            ", professorId=" + professorId +
+            ", disciplinaId=" + disciplinaId +
+            ", alunoId=" + alunoId +
+            ", codigoTurma='" + codigoTurma + '\'' +
+            ", nota=" + nota +
+            '}';
+}
 }

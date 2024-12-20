@@ -1,67 +1,65 @@
 package entidade;
 
-import java.math.BigDecimal;
-
 public class Relatorio {
-    private String codigoTurma;
-    private String nomeDisciplina;
-    private int alunoId;
-    private String alunoNome;
-    private BigDecimal nota;
+
+    private String disciplina;
+    private int codigoTurma;
+    private String aluno;
+    private double nota;
 
     public Relatorio() {
-        this.codigoTurma = "";
-        this.nomeDisciplina = "";
-        this.alunoId = 0;
-        this.alunoNome = "";
-        this.nota = new BigDecimal(0);
+        this.disciplina = "";
+        this.codigoTurma = 0;
+        this.aluno = "";
+        this.nota = 0;
     }
 
-    public Relatorio(String codigoTurma, String nomeDisciplina, int alunoId, String alunoNome, BigDecimal nota) {
+    public Relatorio(String disciplina, int codigoTurma, String aluno, double nota) {
+        this.disciplina = disciplina;
         this.codigoTurma = codigoTurma;
-        this.nomeDisciplina = nomeDisciplina;
-        this.alunoId = alunoId;
-        this.alunoNome = alunoNome;
+        this.aluno = aluno;
         this.nota = nota;
     }
 
-    public String getCodigoTurma() {
+    public String getDisciplina() {
+        return disciplina;
+    }
+
+    public void setDisciplina(String disciplina) {
+        this.disciplina = disciplina;
+    }
+
+    public int getCodigoTurma() {
         return codigoTurma;
     }
 
-    public void setCodigoTurma(String codigoTurma) {
+    public void setCodigoTurma(int codigoTurma) {
         this.codigoTurma = codigoTurma;
     }
 
-    public String getNomeDisciplina() {
-        return nomeDisciplina;
+    public String getAluno() {
+        return aluno;
     }
 
-    public void setNomeDisciplina(String nomeDisciplina) {
-        this.nomeDisciplina = nomeDisciplina;
+    public void setAluno(String aluno) {
+        this.aluno = aluno;
     }
 
-    public int getAlunoId() {
-        return alunoId;
-    }
-
-    public void setAlunoId(int alunoId) {
-        this.alunoId = alunoId;
-    }
-
-    public String getAlunoNome() {
-        return alunoNome;
-    }
-
-    public void setAlunoNome(String alunoNome) {
-        this.alunoNome = alunoNome;
-    }
-
-    public BigDecimal getNota() {
+    public double getNota() {
         return nota;
     }
 
-    public void setNota(BigDecimal nota) {
+    public void setNota(double nota) {
         this.nota = nota;
+    }
+
+    @Override
+    public String toString() {
+        return "Relatorio{"
+                + "disciplina='" + disciplina + '\''
+                + ", codigoTurma=" + codigoTurma
+                + ", aluno='" + aluno + '\''
+                + ", nota=" + nota
+                + '}';
     }
 }

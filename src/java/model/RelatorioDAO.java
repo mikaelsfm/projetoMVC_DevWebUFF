@@ -1,40 +1,50 @@
 package model;
 
-import entidade.Relatorio;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RelatorioDAO {
-    public ArrayList<Relatorio> gerarRelatorio() {
-        ArrayList<Relatorio> relatorio = new ArrayList<>();
+
+    public List<Map<String, Object>> gerarRelatorio() throws Exception {
         Conexao conexao = new Conexao();
-
+        List<Map<String, Object>> relatorio = new ArrayList<>();
         try {
-            String query = "SELECT t.codigo_turma, d.nome AS disciplina, a.id AS aluno_id, a.nome AS aluno_nome, t.nota " +
-                           "FROM turmas t " +
-                           "JOIN disciplinas d ON t.disciplina_id = d.id " +
-                           "JOIN alunos a ON t.aluno_id = a.id";
+            String query =
+                "SELECT " +
+                "    d.nome AS disciplina_nome, " +
+                "    t.codigo_turma AS codigo_turma, " +
+                "    p.nome AS professor_nome, " +
+                "    a.nome AS aluno_nome, " +
+                "    t.nota AS nota " +
+                "FROM " +
+                "    turmas t " +
+                "JOIN " +
+                "    disciplina d ON t.disciplina_id = d.id " +
+                "JOIN " +
+                "    professores p ON t.professor_id = p.id " +
+                "JOIN " +
+                "    alunos a ON t.aluno_id = a.id " +
+                "ORDER BY " +
+                "    d.nome, t.codigo_turma, a.nome";
 
-            PreparedStatement sql = conexao.getConexao().prepareStatement(query);
-            ResultSet resultado = sql.executeQuery();
+            PreparedStatement stmt = conexao.getConexao().prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
 
-            while (resultado.next()) {
-                Relatorio item = new Relatorio(
-                    resultado.getString("codigo_turma"),
-                    resultado.getString("disciplina"),
-                    resultado.getInt("aluno_id"),
-                    resultado.getString("aluno_nome"),
-                    resultado.getBigDecimal("nota")
-                );
-                relatorio.add(item);
+            while (rs.next()) {
+                Map<String, Object> linha = new HashMap<>();
+                linha.put("disciplina_nome", rs.getString("disciplina_nome"));
+                linha.put("codigo_turma", rs.getString("codigo_turma"));
+                linha.put("professor_nome", rs.getString("professor_nome"));
+                linha.put("aluno_nome", rs.getString("aluno_nome"));
+                linha.put("nota", rs.getDouble("nota"));
+                relatorio.add(linha);
             }
-        } catch (SQLException e) {
-            System.err.println("Erro ao gerar relatório: " + e.getMessage());
         } finally {
             conexao.closeConexao();
         }
-    return relatorio;
-}
+        return relatorio;
+    }
 }

@@ -63,4 +63,15 @@ public class Professor {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    @Override
+    public String toString() {
+        return "Professor{"
+                + "id=" + id
+                + ", nome='" + nome + '\''
+                + ", email='" + email + '\''
+                + ", cpf='" + cpf + '\''
+                + ", senha='" + senha + '\''
+                + '}';
+    }
 }

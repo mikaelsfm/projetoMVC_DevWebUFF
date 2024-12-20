@@ -13,7 +13,6 @@ public class Aluno {
     private String bairro;
     private String cep;
 
-
     public Aluno() {
         this.id = 0;
         this.nome = "";
@@ -28,7 +27,7 @@ public class Aluno {
     }
 
     public Aluno(int id, String nome, String email, String celular, String cpf, String senha,
-                 String endereco, String cidade, String bairro, String cep) {
+            String endereco, String cidade, String bairro, String cep) {
         this.id = id;
         this.nome = nome;
         this.email = email;
@@ -120,4 +119,20 @@ public class Aluno {
     public void setCep(String cep) {
         this.cep = cep;
     }
+
+    @Override
+    public String toString() {
+        return "Aluno{"
+                + "id=" + id
+                + ", nome='" + nome + '\''
+                + ", email='" + email + '\''
+                + ", celular='" + celular + '\''
+                + ", cpf='" + cpf + '\''
+                + ", endereco='" + endereco + '\''
+                + ", cidade='" + cidade + '\''
+                + ", bairro='" + bairro + '\''
+                + ", cep='" + cep + '\''
+                + '}';
+    }
+
 }
