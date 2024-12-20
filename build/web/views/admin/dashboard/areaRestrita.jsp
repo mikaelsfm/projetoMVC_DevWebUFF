@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container">
         <jsp:include page="../../comum/menu.jsp" />
         <div class="mt-4">
             <h1 class="text-primary">Área Restrita</h1>

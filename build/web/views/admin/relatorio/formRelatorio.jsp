@@ -1,46 +1,45 @@
-<%@page import="java.util.ArrayList"%>
-<%@page import="entidade.Relatorio"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
         <meta charset="UTF-8">
-        <title>Relatório de Turmas</title>
-        <link rel="stylesheet" href="/aplicacaoMVC/views/bootstrap/bootstrap.min.css">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="<%= request.getContextPath() %>/views/bootstrap/bootstrap.min.css" rel="stylesheet">
+        <title>Relatório de Disciplinas e Turmas</title>
     </head>
     <body>
         <div class="container mt-5">
-            <h1>Relatório de Disciplinas, Turmas e Alunos</h1>
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
+            <h2>Relatório de Disciplinas e Turmas</h2>
+            <table class="table table-striped">
+                <thead>
                     <tr>
-                        <th>Código da Turma</th>
-                        <th>Nome da Disciplina</th>
-                        <th>ID do Aluno</th>
-                        <th>Nome do Aluno</th>
+                        <th>Disciplina</th>
+                        <th>Turma</th>
+                        <th>Professor</th>
+                        <th>Aluno</th>
                         <th>Nota</th>
                     </tr>
                 </thead>
                 <tbody>
                     <%
-                        ArrayList<Relatorio> relatorio = (ArrayList<Relatorio>) request.getAttribute("relatorio");
-                        if (relatorio != null) {
-                            for (Relatorio item : relatorio) {
+                        List<Map<String, Object>> relatorio = (List<Map<String, Object>>) request.getAttribute("relatorio");
+                        for (Map<String, Object> linha : relatorio) {
                     %>
                     <tr>
-                        <td><%= item.getCodigoTurma() %></td>
-                        <td><%= item.getNomeDisciplina() %></td>
-                        <td><%= item.getAlunoId() %></td>
-                        <td><%= item.getAlunoNome() %></td>
-                        <td><%= item.getNota() %></td>
+                        <td><%= linha.get("disciplina_nome") %></td>
+                        <td><%= linha.get("codigo_turma") %></td>
+                        <td><%= linha.get("professor_nome") %></td>
+                        <td><%= linha.get("aluno_nome") %></td>
+                        <td><%= linha.get("nota") %></td>
                     </tr>
-                    <%
-                            }
-                        }
-                    %>
+                    <% } %>
                 </tbody>
             </table>
-            <a href="/aplicacaoMVC/admin/home.jsp" class="btn btn-primary">Voltar</a>
         </div>
+        <script src="<%= request.getContextPath() %>/views/bootstrap/bootstrap.bundle.min.js"></script>
     </body>
 </html>
