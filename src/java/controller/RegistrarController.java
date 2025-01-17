@@ -11,10 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.AdministradorDAO;
 
-/**
- *
- * @author Leonardo
- */
 @WebServlet(name = "RegistrarController", urlPatterns = {"/RegistrarController"})
 public class RegistrarController extends HttpServlet {
 

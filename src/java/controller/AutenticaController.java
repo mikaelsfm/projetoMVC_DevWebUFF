@@ -10,11 +10,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import model.AdministradorDAO;
+import model.AlunoDAO;
+import entidade.Aluno;
 
-/**
- *
- * @author Leonardo
- */
+
 @WebServlet(name = "AutenticaController", urlPatterns = {"/AutenticaController"})
 public class AutenticaController extends HttpServlet {
 
@@ -33,21 +32,23 @@ public class AutenticaController extends HttpServlet {
             throws ServletException, IOException {
 
         RequestDispatcher rd;
-        // pegando os parâmetros do request
         String cpf_user = request.getParameter("cpf");
         String senha_user = request.getParameter("senha");
+        String userType = request.getParameter("userType");
+
         if (cpf_user.isEmpty() || senha_user.isEmpty()) {
-            // dados não foram preenchidos retorna ao formulário
             request.setAttribute("msgError", "Usuário e/ou senha incorreto");
             rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
             rd.forward(request, response);
+            return;
+        }
 
-        } else {
-            Administrador administradorObtido;
+        if ("administrador".equals(userType)) {
+            AdministradorDAO adminDAO = new AdministradorDAO();
             Administrador administrador = new Administrador(cpf_user, senha_user);
-            AdministradorDAO AdministradorDAO = new AdministradorDAO();
+            Administrador administradorObtido;
             try {
-                administradorObtido = AdministradorDAO.Logar(administrador);
+                administradorObtido = adminDAO.Logar(administrador);
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
                 throw new RuntimeException("Falha na query para Logar");
@@ -57,15 +58,45 @@ public class AutenticaController extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("administrador", administradorObtido);
 
-                rd = request.getRequestDispatcher("/admin/dashboard");
+                rd = request.getRequestDispatcher("/views/admin/dashboard/areaRestritaAdmin.jsp");
                 rd.forward(request, response);
 
             } else {
-                request.setAttribute("msgError", "Usuário e/ou senha incorreto");
+                request.setAttribute("msgError", "Usuário e/ou senha incorreto (Admin)");
                 rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
                 rd.forward(request, response);
-
             }
+
+        } else if ("aluno".equals(userType)) {
+            AlunoDAO alunoDAO = new AlunoDAO();
+            Aluno aluno = new Aluno();
+            aluno.setCpf(cpf_user);
+            aluno.setSenha(senha_user);
+
+            Aluno alunoObtido = null;
+            try {
+                alunoObtido = alunoDAO.logar(aluno);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw new RuntimeException("Falha na query para Logar Aluno");
+            }
+
+            if (alunoObtido != null && alunoObtido.getId() != 0) {
+                HttpSession session = request.getSession();
+                session.setAttribute("aluno", alunoObtido);
+
+                rd = request.getRequestDispatcher("/views/admin/dashboard/areaRestritaAluno.jsp");
+                rd.forward(request, response);
+
+            } else {
+                request.setAttribute("msgError", "Usuário e/ou senha incorreto (Aluno)");
+                rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
+                rd.forward(request, response);
+            }
+        } else {
+            request.setAttribute("msgError", "Tipo de usuário inválido");
+            rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
+            rd.forward(request, response);
         }
     }
 

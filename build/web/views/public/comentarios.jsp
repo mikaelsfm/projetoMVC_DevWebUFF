@@ -13,7 +13,7 @@
     </head>
     <body>
         <div class="container">
-            <jsp:include page="../comum/menu.jsp" />
+            <jsp:include page="../comum/menuAdmin.jsp" />
             <div class="mt-5">
                 <h1>Comentários dos usuários</h1>
 

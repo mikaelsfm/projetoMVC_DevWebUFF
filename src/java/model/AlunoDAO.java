@@ -136,4 +136,35 @@ public class AlunoDAO implements Dao<Aluno> {
         }
         return meusAlunos;
     }
+    
+    public Aluno logar(Aluno aluno) {
+    Conexao conexao = new Conexao();
+    Aluno alunoObtido = new Aluno();
+    try {
+        PreparedStatement sql = conexao.getConexao().prepareStatement(
+            "SELECT * FROM alunos WHERE cpf=? AND senha=? LIMIT 1"
+        );
+        sql.setString(1, aluno.getCpf());
+        sql.setString(2, aluno.getSenha());
+
+        ResultSet rs = sql.executeQuery();
+        if (rs != null && rs.next()) {
+            alunoObtido.setId(rs.getInt("id"));
+            alunoObtido.setNome(rs.getString("nome"));
+            alunoObtido.setEmail(rs.getString("email"));
+            alunoObtido.setCelular(rs.getString("celular"));
+            alunoObtido.setCpf(rs.getString("cpf"));
+            alunoObtido.setSenha(rs.getString("senha"));
+            alunoObtido.setEndereco(rs.getString("endereco"));
+            alunoObtido.setCidade(rs.getString("cidade"));
+            alunoObtido.setBairro(rs.getString("bairro"));
+            alunoObtido.setCep(rs.getString("cep"));
+        }
+    } catch (SQLException e) {
+        throw new RuntimeException("Erro ao logar aluno: " + e.getMessage());
+    } finally {
+        conexao.closeConexao();
+    }
+    return alunoObtido;
+}
 }

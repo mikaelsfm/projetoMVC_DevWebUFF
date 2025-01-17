@@ -13,7 +13,7 @@
     </head>
     <body>
         <div class="container">
-            <jsp:include page="../../comum/menu.jsp" />
+            <jsp:include page="../../comum/menuAdmin.jsp" />
             <div class="row mt-5">
                 <h2>Relatório de Disciplinas e Turmas</h2>
                 <table class="table table-striped">

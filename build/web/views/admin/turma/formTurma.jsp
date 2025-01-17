@@ -17,7 +17,7 @@
     <body>
 
         <div class="container">
-            <jsp:include page="../../comum/menu.jsp" />
+            <jsp:include page="../../comum/menuAdmin.jsp" />
             <div class="row mt-5">
                 <div class="col-sm-4 offset-3">
                     <%
