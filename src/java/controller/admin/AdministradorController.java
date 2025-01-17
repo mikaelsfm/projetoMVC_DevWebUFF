@@ -80,11 +80,6 @@ public class AdministradorController extends HttpServlet {
         try {
             switch (btEnviar) {
                 case "Incluir":
-                    String reSenha = request.getParameter("senha2");
-                    if (!senha.equals(reSenha)) {
-                        request.setAttribute("msgOperacaoRealizada", "Senhas Precisam Ser iguais.");
-                        break;
-                    }
                     administradorDao.Inserir(administrador);
                     request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                     break;
@@ -107,7 +102,7 @@ public class AdministradorController extends HttpServlet {
                     throw new ServletException("Ação não reconhecida.");
             }
 
-            request.setAttribute("link", "/aplicacaoMVC/admin/Administradores?acao=Listar");
+            request.setAttribute("link", "/aplicacaoMVC/admin/AdministradorController?acao=Listar");
             rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
             rd.forward(request, response);
 

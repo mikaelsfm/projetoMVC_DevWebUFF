@@ -51,7 +51,8 @@ public class TurmaDAO implements Dao<Turma> {
 
         } catch (SQLException e) {
             System.err.println("Query de insert (turma) incorreta: " + e.getMessage());
-        } finally {
+            throw new RuntimeException(e);
+}  finally {
             conexao.closeConexao();
         }
     }
@@ -120,5 +121,132 @@ public class TurmaDAO implements Dao<Turma> {
             conexao.closeConexao();
         }
         return minhasTurmas;
+    }
+    
+    public ArrayList<Turma> getAllDoAluno(int alunoId) {
+        ArrayList<Turma> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+        try {
+            String sql = "SELECT * FROM turmas WHERE aluno_id=? ORDER BY codigo_turma";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setInt(1, alunoId);
+            ResultSet rs = ps.executeQuery();
+            while (rs != null && rs.next()) {
+                Turma t = new Turma();
+                t.setId(rs.getInt("id"));
+                t.setProfessorId(rs.getInt("professor_id"));
+                t.setDisciplinaId(rs.getInt("disciplina_id"));
+                t.setAlunoId(rs.getInt("aluno_id"));
+                t.setCodigoTurma(rs.getString("codigo_turma"));
+                t.setNota(rs.getBigDecimal("nota"));
+                lista.add(t);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar turmas do aluno: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+        return lista;
+    }
+    
+    public ArrayList<Turma> getVagasDisponiveis() {
+        ArrayList<Turma> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+        try {
+            String sql = "SELECT * FROM turmas WHERE aluno_id=0 ORDER BY codigo_turma";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs != null && rs.next()) {
+                Turma t = new Turma();
+                t.setId(rs.getInt("id"));
+                t.setProfessorId(rs.getInt("professor_id"));
+                t.setDisciplinaId(rs.getInt("disciplina_id"));
+                t.setAlunoId(rs.getInt("aluno_id"));
+                t.setCodigoTurma(rs.getString("codigo_turma"));
+                t.setNota(rs.getBigDecimal("nota"));
+                lista.add(t);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar vagas disponíveis: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+        return lista;
+    }
+    
+    public int countOcupadasPorCodigo(String codigoTurma) {
+        Conexao conexao = new Conexao();
+        try {
+            String sql = "SELECT COUNT(*) AS qt FROM turmas WHERE codigo_turma=? AND aluno_id<>0";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setString(1, codigoTurma);
+            ResultSet rs = ps.executeQuery();
+            if (rs != null && rs.next()) {
+                return rs.getInt("qt");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao contar turmas ocupadas: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+        return 0;
+    }
+
+    public ArrayList<Turma> getTurmasNaoInscritas(int alunoId) {
+        ArrayList<Turma> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+        try {
+            String sql = "SELECT * FROM turmas WHERE aluno_id <> ? ORDER BY codigo_turma";
+
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setInt(1, alunoId);
+            ResultSet rs = ps.executeQuery();
+            while (rs != null && rs.next()) {
+                Turma t = new Turma();
+                t.setId(rs.getInt("id"));
+                t.setProfessorId(rs.getInt("professor_id"));
+                t.setDisciplinaId(rs.getInt("disciplina_id"));
+                t.setAlunoId(rs.getInt("aluno_id"));
+                t.setCodigoTurma(rs.getString("codigo_turma"));
+                t.setNota(rs.getBigDecimal("nota"));
+                lista.add(t);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar turmas nao inscritas: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+        return lista;
+    }
+    
+     public void inscreverAluno(int idTurma, int idAluno) {
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement ps = conexao.getConexao().prepareStatement(
+                "UPDATE turmas SET aluno_id=? WHERE id=?"
+            );
+            ps.setInt(1, idAluno);
+            ps.setInt(2, idTurma);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao inscrever aluno: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+    }
+     
+    public void removerAluno(int idTurma) {
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement ps = conexao.getConexao().prepareStatement(
+                "UPDATE turmas SET aluno_id=0, nota=0 WHERE id=?"
+            );
+            ps.setInt(1, idTurma);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao remover inscrição: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
     }
 }

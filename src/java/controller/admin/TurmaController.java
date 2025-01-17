@@ -69,7 +69,7 @@ public class TurmaController extends HttpServlet {
 
         RequestDispatcher rd;
 
-        if (codigoTurma.isEmpty() || nota == null) {
+        if (codigoTurma.isEmpty()) {
             Turma turma = new Turma();
             switch (btEnviar) {
                 case "Alterar":

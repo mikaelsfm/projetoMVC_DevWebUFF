@@ -14,7 +14,7 @@
     </head>
     <body>
         <div class="container">
-            <jsp:include page="../../comum/menuAdmin.jsp" />
+            <jsp:include page="../../comum/menu.jsp" />
             <div class="mt-5">
                 <h1>Área Restrita</h1>
                 <h2>Lista de Disciplinas</h2>

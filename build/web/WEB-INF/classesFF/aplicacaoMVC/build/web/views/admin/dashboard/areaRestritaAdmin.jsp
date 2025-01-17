@@ -14,7 +14,7 @@
 
 <body>
     <div class="container">
-        <jsp:include page="../../comum/menuAdmin.jsp" />
+        <jsp:include page="../../comum/menu.jsp" />
         <div class="mt-4">
             <h1 class="text-primary">Área Restrita - Administrador</h1>
             <%

@@ -17,7 +17,7 @@
     <body>
 
         <div class="container">
-            <jsp:include page="../../comum/menuAdmin.jsp" />
+            <jsp:include page="../../comum/menu.jsp" />
             <div class="row mt-5">
                 <div class="col-sm-4 offset-3">
                     <%
@@ -34,7 +34,6 @@
                                 out.println("<h1>Excluir Turma</h1>");
                                 break;
                         }
-
                         String msgError = (String) request.getAttribute("msgError");
                         if ((msgError != null) && (!msgError.isEmpty())) {%>
                     <div class="alert alert-danger" role="alert">
