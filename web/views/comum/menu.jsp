@@ -12,6 +12,7 @@
                                     if (sessao != null) {
                                         Administrador administradorLogado = (Administrador) sessao.getAttribute("administrador");
                                         Aluno alunoLogado = (Aluno) sessao.getAttribute("aluno");
+                                        Professor professorLogado = (Professor) sessao.getAttribute("professor");
 
                                         if (administradorLogado != null) {
                                 %>
@@ -35,7 +36,17 @@
                                             </a>
                                             <a class="nav-link" href="/aplicacaoMVC/common/logOut">Logout</a>
                                 <%
-                                        } else {
+                                        } else if (professorLogado != null) {
+                                %>
+                                            <a class="nav-link" href="/aplicacaoMVC/professor/LancarNotasController?acao=Listar">
+                                                Lançar Notas
+                                            </a>
+                                            <a class="nav-link" href="/aplicacaoMVC/professor/ListarAlunosController?acao=Listar">
+                                                Listagem de Alunos
+                                            </a>
+                                            <a class="nav-link" href="/aplicacaoMVC/common/logOut">Logout</a>
+                                <%
+                                        }  else {
                                 %>
                                             <a class="nav-link" href="/aplicacaoMVC/MostrarComentarios">Comentários</a>
                                             <a class="nav-link" href="/aplicacaoMVC/AutenticaController?acao=Login">Login</a>

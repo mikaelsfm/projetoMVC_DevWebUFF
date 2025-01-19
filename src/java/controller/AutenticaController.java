@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 import model.AdministradorDAO;
 import model.AlunoDAO;
 import entidade.Aluno;
+import entidade.Professor;
+import model.ProfessorDAO;
 
 
 @WebServlet(name = "AutenticaController", urlPatterns = {"/AutenticaController"})
@@ -90,6 +92,32 @@ public class AutenticaController extends HttpServlet {
 
             } else {
                 request.setAttribute("msgError", "Usuário e/ou senha incorreto (Aluno)");
+                rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
+                rd.forward(request, response);
+            }
+        } else if ("professor".equals(userType)) {
+            ProfessorDAO professorDAO = new ProfessorDAO();
+            Professor professor = new Professor();
+            professor.setCpf(cpf_user);
+            professor.setSenha(senha_user);
+
+            Professor professorObtido = null;
+            try {
+                professorObtido = professorDAO.logar(professor);
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                throw new RuntimeException("Falha na query para Logar Aluno");
+            }
+
+            if (professorObtido != null && professorObtido.getId() != 0) {
+                HttpSession session = request.getSession();
+                session.setAttribute("professor", professorObtido);
+
+                rd = request.getRequestDispatcher("/views/admin/dashboard/areaRestritaProfessor.jsp");
+                rd.forward(request, response);
+
+            } else {
+                request.setAttribute("msgError", "Usuário e/ou senha incorreto (Professor)");
                 rd = request.getRequestDispatcher("/views/autenticacao/formLogin.jsp");
                 rd.forward(request, response);
             }

@@ -1,21 +1,20 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="entidade.Turma"%>
-
+<%@page import="entidade.Professor"%>
+<%@page import="entidade.Disciplina"%>
 <!DOCTYPE html>
 <html lang="pt-br">
-
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="#">
         <title>Turma</title>
-        <link href="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.min.css"  rel="stylesheet">
+        <link href="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.min.css" rel="stylesheet">
     </head>
 
     <body>
-
         <div class="container">
             <jsp:include page="../../comum/menu.jsp" />
             <div class="row mt-5">
@@ -36,43 +35,77 @@
                         }
                         String msgError = (String) request.getAttribute("msgError");
                         if ((msgError != null) && (!msgError.isEmpty())) {%>
-                    <div class="alert alert-danger" role="alert">
-                        <%= msgError%>
-                    </div>
-                    <% }%>
+                        <div class="alert alert-danger" role="alert">
+                            <%= msgError %>
+                        </div>
+                    <% } %>
+
+                    <%
+                        ArrayList<Professor> listaProfessores = (ArrayList<Professor>) request.getAttribute("listaProfessores");
+                        ArrayList<Disciplina> listaDisciplinas = (ArrayList<Disciplina>) request.getAttribute("listaDisciplinas");
+                    %>
 
                     <form action="/aplicacaoMVC/admin/TurmaController" method="POST">
-                        <input type="hidden" name="id" value="<%=turma.getId()%>" class="form-control">
+                        <input type="hidden" name="id" value="<%= turma.getId() %>">
                         <div class="mb-3">
-                            <label for="professorId" class="form-label">ID do Professor</label>
-                            <input type="number" name="professorId" <%= acao.equals("Excluir") ? "Readonly" : ""%> value="<%=turma.getProfessorId()%>" class="form-control">
+                            <label for="professorId" class="form-label">Professor</label>
+                            <select name="professorId" class="form-select" <%= acao.equals("Excluir") ? "disabled" : "" %>>
+                                <option value="">Selecione o Professor</option>
+                                <%
+                                    if (listaProfessores != null) {
+                                        for (Professor p : listaProfessores) {
+                                            String selected = (turma.getProfessorId() == p.getId()) ? "selected" : "";
+                                %>
+                                            <option value="<%= p.getId() %>" <%= selected %>>
+                                                <%= p.getNome() %>
+                                            </option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label for="disciplinaId" class="form-label">ID da Disciplina</label>
-                            <input type="number" name="disciplinaId" <%= acao.equals("Excluir") ? "Readonly" : ""%> value="<%=turma.getDisciplinaId()%>" class="form-control">
+                            <label for="disciplinaId" class="form-label">Disciplina</label>
+                            <select name="disciplinaId" class="form-select" <%= acao.equals("Excluir") ? "disabled" : "" %>>
+                                <option value="">Selecione a Disciplina</option>
+                                <%
+                                    if (listaDisciplinas != null) {
+                                        for (Disciplina d : listaDisciplinas) {
+                                            String selected = (turma.getDisciplinaId() == d.getId()) ? "selected" : "";
+                                %>
+                                            <option value="<%= d.getId() %>" <%= selected %>>
+                                                <%= d.getNome() %>
+                                            </option>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="alunoId" class="form-label">ID do Aluno</label>
-                            <input type="number" name="alunoId" <%= acao.equals("Excluir") ? "Readonly" : ""%> value="<%=turma.getAlunoId()%>" class="form-control">
+                            <input type="text" name="alunoId" class="form-control" value="<%= turma.getAlunoId() %>"
+                                   <%= acao.equals("Excluir") ? "readonly" : "" %>>
                         </div>
                         <div class="mb-3">
                             <label for="codigoTurma" class="form-label">Código da Turma</label>
-                            <input type="text" name="codigoTurma" <%= acao.equals("Excluir") ? "Readonly" : ""%> value="<%=turma.getCodigoTurma()%>" class="form-control">
+                            <input type="text" name="codigoTurma" class="form-control" value="<%= turma.getCodigoTurma() %>"
+                                   <%= acao.equals("Excluir") ? "readonly" : "" %>>
                         </div>
                         <div class="mb-3">
                             <label for="nota" class="form-label">Nota</label>
-                            <input type="number" step="0.01" name="nota" <%= acao.equals("Excluir") ? "Readonly" : ""%> value="<%=turma.getNota()%>" class="form-control">
+                            <input type="number" step="0.01" name="nota" class="form-control" value="<%= turma.getNota() %>"
+                                   <%= acao.equals("Excluir") ? "readonly" : "" %>>
                         </div>
                         <div>
-                            <input type="submit" name="btEnviar" value="<%=acao%>" class="btn btn-primary">
+                            <input type="submit" name="btEnviar" value="<%= acao %>" class="btn btn-primary">
                             <a href="/aplicacaoMVC/admin/TurmaController?acao=Listar" class="btn btn-danger">Retornar</a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
         <script src="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.bundle.min.js"></script>
     </body>
-
 </html>

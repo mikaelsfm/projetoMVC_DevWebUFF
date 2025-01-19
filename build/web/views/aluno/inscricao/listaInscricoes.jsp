@@ -45,8 +45,8 @@
                                         out.println("<tr>");
                                         out.println("<th>" + turma.getId() + "</th>");
                                         out.println("<td>" + turma.getCodigoTurma() + "</td>");
-                                        out.println("<td>" + turma.getProfessorId() + "</td>");
-                                        out.println("<td>" + turma.getDisciplinaId() + "</td>");
+                                        out.println("<td>" + turma.getProfessorNome() + "</td>");
+                                        out.println("<td>" + turma.getDisciplinaNome() + "</td>");
                                         out.println("<td>" + turma.getNota() + "</td>");
                             %>
                             <td>

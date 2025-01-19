@@ -16,7 +16,6 @@
         <div class="container">
             <jsp:include page="../../comum/menu.jsp" />
             <div class="mt-5">
-
                 <h1>Área Restrita</h1>
                 <h2>Lista de Turmas</h2>
 
@@ -27,34 +26,35 @@
                             <tr>
                                 <th scope="col">Id</th>
                                 <th scope="col">Código da Turma</th>
-                                <th scope="col">ID do Professor</th>
-                                <th scope="col">ID da Disciplina</th>
-                                <th scope="col">ID do Aluno</th>
+                                <th scope="col">Professor</th>
+                                <th scope="col">Disciplina</th>
+                                <th scope="col">Aluno</th>
                                 <th scope="col">Nota</th>
-                                <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
                             <%
                                 ArrayList<Turma> listaTurmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
-
-                                for (Turma turma : listaTurmas) {
-                                    out.println("<tr>");
-                                    out.println("<th>" + turma.getId() + "</th>");
-                                    out.println("<td>" + turma.getCodigoTurma() + "</td>");
-                                    out.println("<td>" + turma.getProfessorId() + "</td>");
-                                    out.println("<td>" + turma.getDisciplinaId() + "</td>");
-                                    out.println("<td>" + turma.getAlunoId() + "</td>");
-                                    out.println("<td>" + turma.getNota() + "</td>");
-                                    %>
-                            <td>
-                                <a href="/aplicacaoMVC/admin/TurmaController?acao=Alterar&id=<%=turma.getId()%>" class="btn btn-warning">Alterar</a>
-                                <a href="/aplicacaoMVC/admin/TurmaController?acao=Excluir&id=<%=turma.getId()%>" class="btn btn-danger">Excluir</a>
-                            </td>
-                            <%   out.println("</tr>");
+                                if (listaTurmas != null) {
+                                    for (Turma turma : listaTurmas) {
+                                        if (turma.getAlunoId() == 0) {
+                                            continue;
+                                        }
+                            %>
+                            <tr>
+                                <td><%= turma.getId() %></td>
+                                <td><%= turma.getCodigoTurma() %></td>
+                                <td><%= turma.getProfessorNome() %></td>
+                                <td><%= turma.getDisciplinaNome() %></td>
+                                <td><%= turma.getAlunoNome() == null || turma.getAlunoNome().isEmpty() ? "Sem Alunos" : turma.getAlunoNome() %></td>
+                                <td><%= turma.getNota() %></td>
+                            </tr>
+                            <%
+                                    }
                                 }
                             %>
                         </tbody>
+
                     </table>
                 </div>
             </div>

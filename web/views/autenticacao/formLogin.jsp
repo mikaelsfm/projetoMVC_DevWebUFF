@@ -30,6 +30,7 @@
                                 <select name="userType" class="form-control" required>
                                     <option value="administrador">Administrador</option>
                                     <option value="aluno">Aluno</option>
+                                    <option value="professor">Professor</option>
                                 </select>
                             </div>
                             <div class="mb-3">
