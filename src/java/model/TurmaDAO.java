@@ -269,7 +269,7 @@ public class TurmaDAO implements Dao<Turma> {
             ps.setInt(1, professorId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt("total"); // Retorna o número de turmas
+                return rs.getInt("total");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erro ao contar turmas do professor: " + e.getMessage());

@@ -31,7 +31,7 @@ public class AdministradorDAO {
             sql.setString(2, administrador.getCpf());
             sql.setString(3, administrador.getEndereco());
             sql.setString(4, administrador.getSenha());
-            sql.setString(5, administrador.getAprovado()); // Adiciona o campo aprovado
+            sql.setString(5, administrador.getAprovado());
             sql.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Falha ao inserir administrador", e);
@@ -53,7 +53,7 @@ public class AdministradorDAO {
                 administrador.setCpf(resultado.getString("CPF"));
                 administrador.setEndereco(resultado.getString("ENDERECO"));
                 administrador.setSenha(resultado.getString("SENHA"));
-                administrador.setAprovado(resultado.getString("APROVADO")); // Carrega o campo aprovado
+                administrador.setAprovado(resultado.getString("APROVADO"));
             }
             return administrador;
         } catch (SQLException e) {
@@ -73,7 +73,7 @@ public class AdministradorDAO {
             sql.setString(2, administrador.getCpf());
             sql.setString(3, administrador.getEndereco());
             sql.setString(4, administrador.getSenha());
-            sql.setString(5, administrador.getAprovado()); // Atualiza o campo aprovado
+            sql.setString(5, administrador.getAprovado());
             sql.setInt(6, administrador.getId());
             sql.executeUpdate();
         } catch (SQLException e) {

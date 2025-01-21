@@ -47,7 +47,7 @@ import model.AlunoDAO;
 
                     request.setAttribute("listaTurmas", listaTurmasParaDropdown);
                     request.setAttribute("listaAlunos", listaAlunos);
-                    request.setAttribute("turmaSelecionada", turmaId); // Turma atualmente selecionada
+                    request.setAttribute("turmaSelecionada", turmaId);
 
                     rd = request.getRequestDispatcher("/views/professor/notas/formLancarNotas.jsp");
                     rd.forward(request, response);
