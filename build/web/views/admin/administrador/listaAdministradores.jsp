@@ -28,6 +28,7 @@
                                 <th scope="col">Nome</th>
                                 <th scope="col">CPF</th>
                                 <th scope="col">Endereço</th>
+                                <th scope="col">Aprovado</th>
                                 <th scope="col">Ações</th>
                             </tr>
                         </thead>
@@ -36,18 +37,21 @@
                                 ArrayList<Administrador> listaAdministradores = (ArrayList<Administrador>) request.getAttribute("listaAdministradores");
 
                                 for (Administrador administrador : listaAdministradores) {
-                                    out.println("<tr>");
-                                    out.println("<th>" + administrador.getId() + "</th>");
-                                    out.println("<td>" + administrador.getNome() + "</td>");
-                                    out.println("<td>" + administrador.getCpf() + "</td>");
-                                    out.println("<td>" + administrador.getEndereco() + "</td>");
-                                    %>
-                            <td>
-                                <a href="/aplicacaoMVC/admin/AdministradorController?acao=Alterar&id=<%=administrador.getId()%>" class="btn btn-warning">Alterar</a>
-                                <a href="/aplicacaoMVC/admin/AdministradorController?acao=Excluir&id=<%=administrador.getId()%>" class="btn btn-danger">Excluir</a>
-                            </td>
+                            %>
+                            <tr>
+                                <th><%= administrador.getId() %></th>
+                                <td><%= administrador.getNome() %></td>
+                                <td><%= administrador.getCpf() %></td>
+                                <td><%= administrador.getEndereco() %></td>
+                                <td>
+                                    <%= "S".equals(administrador.getAprovado()) ? "Sim" : "Não" %>
+                                </td>
+                                <td>
+                                    <a href="/aplicacaoMVC/admin/AdministradorController?acao=Alterar&id=<%=administrador.getId()%>" class="btn btn-warning">Alterar</a>
+                                    <a href="/aplicacaoMVC/admin/AdministradorController?acao=Excluir&id=<%=administrador.getId()%>" class="btn btn-danger">Excluir</a>
+                                </td>
+                            </tr>
                             <%  
-                                    out.println("</tr>");
                                 }
                             %>
                         </tbody>
@@ -57,6 +61,5 @@
         </div>
 
         <script src="http://localhost:8080/aplicacaoMVC/views/bootstrap/bootstrap.bundle.min.js"></script>
-
     </body>
 </html>

@@ -63,6 +63,14 @@
                             <label for="endereco" class="form-label">Endereço</label>
                             <input type="text" name="endereco" value="<%=administrador.getEndereco()%>" class="form-control" <%= acao.equals("Excluir") ? "readonly" : ""%> >
                         </div>
+                        
+                        <div class="mb-3">
+                        <label for="aprovado" class="form-label">Aprovado</label>
+                        <select name="aprovado" class="form-select" <%= acao.equals("Excluir") ? "disabled" : "" %>>
+                            <option value="S" <%= "S".equals(administrador.getAprovado()) ? "selected" : "" %>>Sim</option>
+                            <option value="N" <%= "N".equals(administrador.getAprovado()) ? "selected" : "" %>>Não</option>
+                        </select>
+                    </div>
 
                         <div>
                             <input type="submit" name="btEnviar" value="<%=acao%>" class="btn btn-primary">

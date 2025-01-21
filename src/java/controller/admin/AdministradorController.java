@@ -72,9 +72,10 @@ public class AdministradorController extends HttpServlet {
         String cpfAdmin = request.getParameter("cpf");
         String senha = request.getParameter("senha");
         String endereco = request.getParameter("endereco");
+        String aprovado = request.getParameter("aprovado");
         String btEnviar = request.getParameter("btEnviar");
 
-        Administrador administrador = new Administrador(nome, cpfAdmin, endereco, senha);
+        Administrador administrador = new Administrador(nome, cpfAdmin, endereco, senha, aprovado);
         AdministradorDAO administradorDao = new AdministradorDAO();
 
         try {
