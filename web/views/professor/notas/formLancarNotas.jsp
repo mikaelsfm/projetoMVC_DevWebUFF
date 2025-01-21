@@ -31,40 +31,51 @@
                     ArrayList<Turma> turmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
                 %>
 
-                <form action="/aplicacaoMVC/professor/LancarNotasController" method="POST">
+                <form action="/aplicacaoMVC/professor/LancarNotasController" method="GET">
+                    <input type="hidden" name="acao" value="SelecionarTurma">
                     <div class="mb-3">
                         <label for="turmaId" class="form-label">Selecione a Turma</label>
-                        <select name="turmaId" class="form-select" required>
+                        <select id="turmaId" name="turmaId" class="form-select" onchange="this.form.submit()" required>
                             <option value="">Selecione uma Turma</option>
                             <%
                                 if (turmas != null) {
                                     for (Turma turma : turmas) {
+                                        String selected = (request.getAttribute("turmaSelecionada") != null &&
+                                                           ((int) request.getAttribute("turmaSelecionada")) == turma.getId())
+                                                          ? "selected" : "";
                             %>
-                                <option value="<%= turma.getId() %>">
-                                    <%= turma.getCodigoTurma() %> - <%= turma.getDisciplinaNome() %>
-                                </option>
+                                        <option value="<%= turma.getId() %>" <%= selected %>>
+                                            <%= turma.getCodigoTurma() %> - <%= turma.getDisciplinaNome() %>
+                                        </option>
                             <%
                                     }
                                 }
                             %>
                         </select>
                     </div>
+                </form>
+
+                <form action="/aplicacaoMVC/professor/LancarNotasController" method="POST">
+                    <input type="hidden" name="turmaId" value="<%= request.getAttribute("turmaSelecionada") %>">
 
                     <div class="mb-3">
                         <label for="alunoId" class="form-label">Selecione o Aluno</label>
                         <select name="alunoId" class="form-select" required>
                             <option value="">Selecione um Aluno</option>
-                            <!-- Lista de alunos será gerada dinamicamente pelo controlador -->
                             <%
                                 ArrayList<Aluno> alunos = (ArrayList<Aluno>) request.getAttribute("listaAlunos");
-                                if (alunos != null) {
+                                if (alunos != null && !alunos.isEmpty()) {
                                     for (Aluno aluno : alunos) {
                             %>
-                                <option value="<%= aluno.getId() %>">
-                                    <%= aluno.getNome() %>
-                                </option>
+                                        <option value="<%= aluno.getId() %>">
+                                            <%= aluno.getNome() %>
+                                        </option>
                             <%
                                     }
+                                } else {
+                            %>
+                                <option value="">Nenhum aluno cadastrado nesta turma</option>
+                            <%
                                 }
                             %>
                         </select>
@@ -72,7 +83,7 @@
 
                     <div class="mb-3">
                         <label for="nota" class="form-label">Nota</label>
-                        <input type="number" step="0.01" name="nota" class="form-control" required>
+                        <input type="number" step="0.1" name="nota" class="form-control" required>
                     </div>
 
                     <button type="submit" class="btn btn-primary">Lançar Nota</button>

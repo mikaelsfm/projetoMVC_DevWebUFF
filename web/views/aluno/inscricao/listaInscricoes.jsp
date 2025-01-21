@@ -1,3 +1,4 @@
+<%@page import="java.math.BigDecimal"%>
 <%@page import="entidade.Turma"%>
 <%@page import="java.util.ArrayList"%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
@@ -39,7 +40,7 @@
                         <tbody>
                             <%
                                 ArrayList<Turma> listaTurmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
-                                
+
                                 if (listaTurmas != null) {
                                     for (Turma turma : listaTurmas) {
                                         out.println("<tr>");
@@ -47,11 +48,12 @@
                                         out.println("<td>" + turma.getCodigoTurma() + "</td>");
                                         out.println("<td>" + turma.getProfessorNome() + "</td>");
                                         out.println("<td>" + turma.getDisciplinaNome() + "</td>");
-                                        out.println("<td>" + turma.getNota() + "</td>");
+                                        out.println("<td>" + turma.getNota().divide(new BigDecimal("10")) + "</td>");
                             %>
                             <td>
                                 <a href="/aplicacaoMVC/aluno/InscricoesController?acao=Excluir&id=<%=turma.getId()%>"
-                                   class="btn btn-danger">
+                                   class="btn btn-danger"
+                                   onclick="return confirm('Tem certeza que deseja excluir esta turma?');">
                                     Remover Inscrição
                                 </a>
                             </td>

@@ -1,5 +1,6 @@
 package controller.professor;
 
+import entidade.Aluno;
 import entidade.Professor;
 import entidade.Turma;
 import model.TurmaDAO;
@@ -28,7 +29,12 @@ public class LancarNotasController extends HttpServlet {
         }
 
         String acao = request.getParameter("acao");
+        if (acao == null || acao.isEmpty()) {
+            acao = "Listar";
+        }
+
         TurmaDAO turmaDAO = new TurmaDAO();
+        AlunoDAO alunoDAO = new AlunoDAO();
         RequestDispatcher rd;
 
         switch (acao) {
@@ -39,13 +45,26 @@ public class LancarNotasController extends HttpServlet {
                 rd.forward(request, response);
                 break;
 
+            case "SelecionarTurma":
+                int turmaId = Integer.parseInt(request.getParameter("turmaId"));
+                ArrayList<Turma> listaTurmasParaDropdown = turmaDAO.getTurmasPorProfessor(professorLogado.getId());
+                ArrayList<Aluno> listaAlunos = alunoDAO.getAlunosPorTurma(turmaId);
+
+                request.setAttribute("listaTurmas", listaTurmasParaDropdown);
+                request.setAttribute("listaAlunos", listaAlunos);
+                request.setAttribute("turmaSelecionada", turmaId);
+
+                rd = request.getRequestDispatcher("/views/professor/notas/formLancarNotas.jsp");
+                rd.forward(request, response);
+                break;
+
             default:
                 response.sendRedirect("/aplicacaoMVC/professor/LancarNotasController?acao=Listar");
                 break;
         }
     }
 
-    @Override
+   @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -59,11 +78,13 @@ public class LancarNotasController extends HttpServlet {
         try {
             int turmaId = Integer.parseInt(request.getParameter("turmaId"));
             int alunoId = Integer.parseInt(request.getParameter("alunoId"));
-            BigDecimal nota = new BigDecimal(request.getParameter("nota"));
+
+            String notaStr = request.getParameter("nota").replace(",", ".");
+            BigDecimal nota = new BigDecimal(notaStr);
 
             TurmaDAO turmaDAO = new TurmaDAO();
-            boolean isTurmaDoProfessor = turmaDAO.verificarTurmaDoProfessor(turmaId, professorLogado.getId());
 
+            boolean isTurmaDoProfessor = turmaDAO.verificarTurmaDoProfessor(turmaId, professorLogado.getId());
             if (!isTurmaDoProfessor) {
                 throw new RuntimeException("A turma selecionada não pertence ao professor.");
             }
@@ -74,10 +95,10 @@ public class LancarNotasController extends HttpServlet {
             request.setAttribute("link", "/aplicacaoMVC/professor/LancarNotasController");
             RequestDispatcher rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
             rd.forward(request, response);
-        } catch (Exception ex) {
+        } catch (IOException | RuntimeException | ServletException ex) {
             System.out.println("Erro ao lançar nota: " + ex.getMessage());
             request.setAttribute("msgError", "Erro ao lançar nota. Verifique os dados e tente novamente.");
-            RequestDispatcher rd = request.getRequestDispatcher("/views/comum/erro.jsp");
+            RequestDispatcher rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
             rd.forward(request, response);
         }
     }

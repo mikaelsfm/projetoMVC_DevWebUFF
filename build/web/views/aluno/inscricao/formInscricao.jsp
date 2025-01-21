@@ -15,77 +15,64 @@
         <div class="container">
             <jsp:include page="../../comum/menu.jsp" />
 
-            <div class="row mt-5">
-                <div class="col-sm-12">
-                    <%
-                        String acao = (String) request.getAttribute("acao");
-                        String msgError = (String) request.getAttribute("msgError");
-
-                        if (acao == null) {
-                            acao = "";
-                        }
-
-                        if ("Incluir".equals(acao)) {
-                            out.println("<h1>Inscrever-se em Turmas</h1>");
-                        } else {
-                            out.println("<h1>Turmas Disponíveis</h1>");
-                        }
-
-                        if (msgError != null && !msgError.isEmpty()) {
-                    %>
-                            <div class="alert alert-danger" role="alert">
-                                <%= msgError %>
-                            </div>
-                    <%
-                        }
-
-                        ArrayList<Turma> listaTurmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
-                        if (listaTurmas == null) {
-                            listaTurmas = new ArrayList<>();
-                        }
-                    %>
-
-                    <div class="mb-3">
-                        <p>Selecione uma turma e clique em “Inscrever”.</p>
+            <div class="mt-5">
+                <h1>Turmas Disponíveis</h1>
+                <%
+                    String msgError = (String) request.getAttribute("msgError");
+                    if (msgError != null && !msgError.isEmpty()) {
+                %>
+                    <div class="alert alert-danger" role="alert">
+                        <%= msgError %>
                     </div>
+                <%
+                    }
 
-                    <%
-                        if (!listaTurmas.isEmpty()) {
-                            for (Turma t : listaTurmas) {
-                    %>
-                                <div class="row mb-2 p-2 border align-items-center">
-                                    <div class="col-sm-2">
-                                        <strong>ID Turma:</strong> <%= t.getId() %>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <strong>Código:</strong> <%= t.getCodigoTurma() %>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <strong>ProfID:</strong> <%= t.getProfessorId() %>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <strong>DiscID:</strong> <%= t.getDisciplinaId() %>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <strong>Nota:</strong> <%= t.getNota() %>
-                                    </div>
-                                    <div class="col-sm-2 text-end">
+                    ArrayList<Turma> listaTurmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
+                    if (listaTurmas == null) {
+                        listaTurmas = new ArrayList<>();
+                    }
+                %>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID Turma</th>
+                                <th>Código</th>
+                                <th>Professor(a)</th>
+                                <th>Disciplina</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                                if (!listaTurmas.isEmpty()) {
+                                    for (Turma t : listaTurmas) {
+                            %>
+                                <tr>
+                                    <td><%= t.getId() %></td>
+                                    <td><%= t.getCodigoTurma() %></td>
+                                    <td><%= t.getProfessorNome() %></td>
+                                    <td><%= t.getDisciplinaNome() %></td>
+                                    <td>
                                         <form action="/aplicacaoMVC/aluno/InscricoesController" method="POST">
                                             <input type="hidden" name="id" value="<%= t.getId() %>">
                                             <input type="submit" name="btEnviar" value="Incluir" class="btn btn-primary btn-sm">
                                         </form>
-                                    </div>
-                                </div>
-                    <%
-                            }
-                        } else {
-                    %>
-                    <div class="alert alert-info">
-                        Nenhuma turma disponível para inscrição.
-                    </div>
-                <%
-                    }
-                %>
+                                    </td>
+                                </tr>
+                            <%
+                                    }
+                                } else {
+                            %>
+                                <tr>
+                                    <td colspan="5" class="text-center">Nenhuma turma disponível para inscrição.</td>
+                                </tr>
+                            <%
+                                }
+                            %>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

@@ -3,6 +3,7 @@
 <%@page import="entidade.Turma"%>
 <%@page import="entidade.Professor"%>
 <%@page import="entidade.Disciplina"%>
+<%@page import="entidade.Aluno"%>
 <!DOCTYPE html>
 <html lang="pt-br">
     <head>
@@ -84,9 +85,31 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="alunoId" class="form-label">ID do Aluno</label>
-                            <input type="text" name="alunoId" class="form-control" value="<%= turma.getAlunoId() %>"
-                                   <%= acao.equals("Excluir") ? "readonly" : "" %>>
+                            <label for="alunoId" class="form-label">Aluno</label>
+                            <select name="alunoId" class="form-select" <%= acao.equals("Excluir") ? "disabled" : "" %>>
+                                <option value="">Selecione um Aluno</option>
+                                <%
+                                    ArrayList<Aluno> listaAlunos = (ArrayList<Aluno>) request.getAttribute("listaAlunos");
+                                    if (listaAlunos != null) {
+                                        for (Aluno aluno : listaAlunos) {
+                                            String selected = (turma.getAlunoId() == aluno.getId()) ? "selected" : "";
+                                %>
+                                            <option value="<%= aluno.getId() %>" <%= selected %>>
+                                                <%= aluno.getNome() %>
+                                            </option>
+                                <%
+                                        }
+                                    }
+                                %>
+                                <%
+                                    if (acao.equals("Excluir")) {
+                                %>
+                                    <input type="hidden" name="alunoId" value="<%= turma.getAlunoId() %>">
+                                <%
+                                    }
+                                %>
+
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="codigoTurma" class="form-label">Código da Turma</label>

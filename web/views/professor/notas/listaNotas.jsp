@@ -38,22 +38,51 @@
                                     <th>Disciplina</th>
                                     <th>Alunos</th>
                                     <th>Nota</th>
+                                    <th>Vagas Disponíveis</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="turma" items="${listaTurmas}">
+                                <%
+                                    for (Turma turma : turmas) {
+                                %>
                                     <tr>
-                                        <td>${turma.id}</td>
-                                        <td>${turma.codigoTurma}</td>
-                                        <td>${turma.disciplinaNome}</td>
+                                        <td><%= turma.getId() %></td>
+                                        <td><%= turma.getCodigoTurma() %></td>
+                                        <td><%= turma.getDisciplinaNome() %></td>
                                         <td>
-                                            <c:forEach var="aluno" items="${turma.alunosNomes}">
-                                                <span>${aluno}</span><br />
-                                            </c:forEach>
+                                            <% 
+                                                if (turma.getAlunosNomes() != null && !turma.getAlunosNomes().isEmpty()) {
+                                                    for (String aluno : turma.getAlunosNomes()) {
+                                            %>
+                                                        <span><%= aluno %></span><br />
+                                            <%
+                                                    }
+                                                } else {
+                                            %>
+                                                <span>Nenhum aluno cadastrado</span>
+                                            <%
+                                                }
+                                            %>
                                         </td>
-                                        <td>${turma.nota}</td>
+                                        <td><%= turma.getNota() %></td>
+                                        <td>
+                                            <%
+                                                int vagasDisponiveis = 2 - turma.getAlunosNomes().size();
+                                                if (vagasDisponiveis > 0) {
+                                            %>
+                                                <%= vagasDisponiveis %> vagas
+                                            <%
+                                                } else {
+                                            %>
+                                                Turma cheia
+                                            <%
+                                                }
+                                            %>
+                                        </td>
                                     </tr>
-                                </c:forEach>
+                                <%
+                                    }
+                                %>
                             </tbody>
                         </table>
 

@@ -52,8 +52,8 @@ public class TurmaController extends HttpServlet {
                         t.setDisciplinaNome("(Sem disciplina)");
                     }
 
-                    if (t.getAlunoId() > 0) { // Verifica se há algum aluno associado
-                        String[] alunoIds = String.valueOf(t.getAlunoId()).split(","); // Converte o int em String e separa IDs
+                    if (t.getAlunoId() > 0) {
+                        String[] alunoIds = String.valueOf(t.getAlunoId()).split(",");
                         List<String> nomesAlunos = new ArrayList<>();
                         for (String id : alunoIds) {
                             if (!id.trim().isEmpty()) {
@@ -63,7 +63,6 @@ public class TurmaController extends HttpServlet {
                                 }
                             }
                         }
-                        // Concatena os nomes dos alunos
                         StringBuilder nomesConcatenados = new StringBuilder();
                         for (int i = 0; i < nomesAlunos.size(); i++) {
                             nomesConcatenados.append(nomesAlunos.get(i));
@@ -93,26 +92,38 @@ public class TurmaController extends HttpServlet {
                 ArrayList<Disciplina> listaDisciplinas = disciplinaDAO.ListaDeDisciplinas();
                 request.setAttribute("listaDisciplinas", listaDisciplinas);
 
+                ArrayList<Aluno> listaAlunos = alunoDAO.getAll();
+                request.setAttribute("listaAlunos", listaAlunos);
+
                 rd = request.getRequestDispatcher("/views/admin/turma/formTurma.jsp");
                 rd.forward(request, response);
                 break;
 
             case "Alterar":
-            case "Excluir":
-                int id = Integer.parseInt(request.getParameter("id"));
-                turma = turmaDAO.get(id);
+                int idAlterar = Integer.parseInt(request.getParameter("id"));
+                turma = turmaDAO.get(idAlterar);
 
                 request.setAttribute("turma", turma);
                 request.setAttribute("msgError", "");
-                request.setAttribute("acao", acao);
+                request.setAttribute("acao", "Alterar");
 
-                ArrayList<Professor> listaProfessores2 = professorDAO.getAll();
-                request.setAttribute("listaProfessores", listaProfessores2);
+                listaProfessores = professorDAO.getAll();
+                request.setAttribute("listaProfessores", listaProfessores);
 
-                ArrayList<Disciplina> listaDisciplinas2 = disciplinaDAO.ListaDeDisciplinas();
-                request.setAttribute("listaDisciplinas", listaDisciplinas2);
+                listaDisciplinas = disciplinaDAO.ListaDeDisciplinas();
+                request.setAttribute("listaDisciplinas", listaDisciplinas);
 
                 rd = request.getRequestDispatcher("/views/admin/turma/formTurma.jsp");
+                rd.forward(request, response);
+                break;
+
+            case "Excluir":
+                int idExcluir = Integer.parseInt(request.getParameter("id"));
+                turmaDAO.delete(idExcluir);
+
+                request.setAttribute("msgOperacaoRealizada", "Turma excluída com sucesso!");
+                request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
                 rd.forward(request, response);
                 break;
 
@@ -149,11 +160,33 @@ public class TurmaController extends HttpServlet {
         try {
             switch (btEnviar) {
                 case "Incluir":
+                    TurmaDAO turmaDAOIncluir = new TurmaDAO();
+                    int totalTurmas = turmaDAOIncluir.countTurmasPorProfessor(professorId);
+
+                    if (totalTurmas >= 2) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro: O professor já está associado a 2 turmas. Não é possível adicionar outra.");
+                        request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                        RequestDispatcher rdErro = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rdErro.forward(request, response);
+                        return;
+                    }
+
                     turmaDAO.inserir(turma);
                     request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                     break;
 
                 case "Alterar":
+                    TurmaDAO turmaDAOAlterar = new TurmaDAO();
+                    int totalTurmasAlterar = turmaDAOAlterar.countTurmasPorProfessor(professorId);
+
+                    if (totalTurmasAlterar >= 2 && professorId != turmaDAO.get(id).getProfessorId()) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro: O professor já está associado a 2 turmas. Não é possível alterar para outro professor.");
+                        request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                        RequestDispatcher rdErro = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rdErro.forward(request, response);
+                        return;
+                    }
+
                     turmaDAO.update(turma);
                     request.setAttribute("msgOperacaoRealizada", "Alteração realizada com sucesso");
                     break;

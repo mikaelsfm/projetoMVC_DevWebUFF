@@ -138,33 +138,64 @@ public class AlunoDAO implements Dao<Aluno> {
     }
     
     public Aluno logar(Aluno aluno) {
-    Conexao conexao = new Conexao();
-    Aluno alunoObtido = new Aluno();
-    try {
-        PreparedStatement sql = conexao.getConexao().prepareStatement(
-            "SELECT * FROM alunos WHERE cpf=? AND senha=? LIMIT 1"
-        );
-        sql.setString(1, aluno.getCpf());
-        sql.setString(2, aluno.getSenha());
+        Conexao conexao = new Conexao();
+        Aluno alunoObtido = new Aluno();
+        try {
+            PreparedStatement sql = conexao.getConexao().prepareStatement(
+                "SELECT * FROM alunos WHERE cpf=? AND senha=? LIMIT 1"
+            );
+            sql.setString(1, aluno.getCpf());
+            sql.setString(2, aluno.getSenha());
 
-        ResultSet rs = sql.executeQuery();
-        if (rs != null && rs.next()) {
-            alunoObtido.setId(rs.getInt("id"));
-            alunoObtido.setNome(rs.getString("nome"));
-            alunoObtido.setEmail(rs.getString("email"));
-            alunoObtido.setCelular(rs.getString("celular"));
-            alunoObtido.setCpf(rs.getString("cpf"));
-            alunoObtido.setSenha(rs.getString("senha"));
-            alunoObtido.setEndereco(rs.getString("endereco"));
-            alunoObtido.setCidade(rs.getString("cidade"));
-            alunoObtido.setBairro(rs.getString("bairro"));
-            alunoObtido.setCep(rs.getString("cep"));
+            ResultSet rs = sql.executeQuery();
+            if (rs != null && rs.next()) {
+                alunoObtido.setId(rs.getInt("id"));
+                alunoObtido.setNome(rs.getString("nome"));
+                alunoObtido.setEmail(rs.getString("email"));
+                alunoObtido.setCelular(rs.getString("celular"));
+                alunoObtido.setCpf(rs.getString("cpf"));
+                alunoObtido.setSenha(rs.getString("senha"));
+                alunoObtido.setEndereco(rs.getString("endereco"));
+                alunoObtido.setCidade(rs.getString("cidade"));
+                alunoObtido.setBairro(rs.getString("bairro"));
+                alunoObtido.setCep(rs.getString("cep"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao logar aluno: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
         }
-    } catch (SQLException e) {
-        throw new RuntimeException("Erro ao logar aluno: " + e.getMessage());
-    } finally {
-        conexao.closeConexao();
+        return alunoObtido;
     }
-    return alunoObtido;
-}
+    
+    public ArrayList<Aluno> getAlunosPorTurma(int turmaId) {
+        ArrayList<Aluno> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+
+        try {
+            String sql = 
+                "SELECT a.id, a.nome, a.email " +
+                "FROM alunos a " +
+                "JOIN turmas t ON t.aluno_id = a.id " +
+                "WHERE t.id = ?";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setInt(1, turmaId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Aluno aluno = new Aluno();
+                aluno.setId(rs.getInt("id"));
+                aluno.setNome(rs.getString("nome"));
+                aluno.setEmail(rs.getString("email"));
+                lista.add(aluno);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar alunos por turma: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+
+        return lista;
+    }
 }
