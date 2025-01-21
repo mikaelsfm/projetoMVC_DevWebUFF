@@ -28,6 +28,7 @@
                             <th scope="col">Código da Turma</th>
                             <th scope="col">Professor</th>
                             <th scope="col">Disciplina</th>
+                            <th scope="col">Aluno</th> <!-- Adiciona a coluna do aluno -->
                             <th scope="col">Nota</th>
                             <th scope="col">Ações</th>
                         </tr>
@@ -43,6 +44,7 @@
                             <td><%= turma.getCodigoTurma() %></td>
                             <td><%= turma.getProfessorNome() %></td>
                             <td><%= turma.getDisciplinaNome() %></td>
+                            <td><%= turma.getAlunoNome() %></td> <!-- Exibe o nome do aluno -->
                             <td><%= turma.getNota() %></td>
                             <td>
                                 <a href="/aplicacaoMVC/admin/TurmaController?acao=Alterar&id=<%= turma.getId() %>" class="btn btn-sm btn-primary">
@@ -60,7 +62,7 @@
                             } else {
                         %>
                         <tr>
-                            <td colspan="6" class="text-center">Nenhuma turma encontrada.</td>
+                            <td colspan="7" class="text-center">Nenhuma turma encontrada.</td>
                         </tr>
                         <%
                             }

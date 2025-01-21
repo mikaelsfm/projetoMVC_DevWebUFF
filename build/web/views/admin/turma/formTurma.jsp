@@ -77,12 +77,16 @@
                             <label for="alunoId" class="form-label">Aluno</label>
                             <select name="alunoId" class="form-select" <%= acao.equals("Excluir") ? "disabled" : "" %>>
                                 <option value="">Selecione um Aluno</option>
-                                <% if (listaAlunos != null) {
+                                <% 
+                                if (listaAlunos != null) {
                                     for (Aluno aluno : listaAlunos) {
-                                        String selected = (turma.getAlunoId() == aluno.getId()) ? "selected" : ""; %>
+                                        String selected = (turma.getAlunoId() == aluno.getId()) ? "selected" : ""; 
+                                %>
                                 <option value="<%= aluno.getId() %>" <%= selected %>><%= aluno.getNome() %></option>
-                                <%   }
-                                   } %>
+                                <% 
+                                    }
+                                } 
+                                %>
                             </select>
                             <% if (acao.equals("Excluir")) { %>
                                 <input type="hidden" name="alunoId" value="<%= turma.getAlunoId() %>">

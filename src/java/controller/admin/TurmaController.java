@@ -103,6 +103,13 @@ public class TurmaController extends HttpServlet {
                 int idAlterar = Integer.parseInt(request.getParameter("id"));
                 turma = turmaDAO.get(idAlterar);
 
+                if (turma.getAlunoId() != 0) {
+                    Aluno aluno = alunoDAO.get(turma.getAlunoId());
+                    if (aluno != null) {
+                        turma.setAlunoNome(aluno.getNome());
+                    }
+                }
+
                 request.setAttribute("turma", turma);
                 request.setAttribute("msgError", "");
                 request.setAttribute("acao", "Alterar");
@@ -112,6 +119,9 @@ public class TurmaController extends HttpServlet {
 
                 listaDisciplinas = disciplinaDAO.ListaDeDisciplinas();
                 request.setAttribute("listaDisciplinas", listaDisciplinas);
+
+                listaAlunos = alunoDAO.getAll();
+                request.setAttribute("listaAlunos", listaAlunos);
 
                 rd = request.getRequestDispatcher("/views/admin/turma/formTurma.jsp");
                 rd.forward(request, response);
