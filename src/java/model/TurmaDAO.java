@@ -214,28 +214,14 @@ public class TurmaDAO implements Dao<Turma> {
         Conexao conexao = new Conexao();
         try {
             String sql = 
-              "SELECT t.* " +
-              "FROM turmas t " +
-              "JOIN ( " +
-              "   SELECT professor_id, disciplina_id, codigo_turma, COUNT(*) AS qt " +
-              "   FROM turmas " +
-              "   GROUP BY professor_id, disciplina_id, codigo_turma " +
-              "   HAVING qt < 2 " +
-              ") temp ON t.professor_id = temp.professor_id " +
-              "       AND t.disciplina_id = temp.disciplina_id " +
-              "       AND t.codigo_turma  = temp.codigo_turma " +
-              "WHERE NOT EXISTS ( " +
-              "   SELECT 1 " +
-              "   FROM turmas t2 " +
-              "   WHERE t2.professor_id   = t.professor_id " +
-              "     AND t2.disciplina_id  = t.disciplina_id " +
-              "     AND t2.codigo_turma   = t.codigo_turma " +
-              "     AND t2.aluno_id       = ? " +    // alunoId do parâmetro
-              ") " +
-              "ORDER BY t.codigo_turma";
+                "SELECT t.* " +
+                "FROM turmas t " +
+                "LEFT JOIN alunos a ON t.aluno_id = a.id " +
+                "WHERE t.aluno_id IS NULL OR t.aluno_id <> ? " +
+                "ORDER BY t.codigo_turma";
 
             PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
-            ps.setInt(1, alunoId);  // Substitui o ? do NOT EXISTS
+            ps.setInt(1, alunoId);
             ResultSet rs = ps.executeQuery();
 
             while (rs != null && rs.next()) {
@@ -249,12 +235,13 @@ public class TurmaDAO implements Dao<Turma> {
                 lista.add(t);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao listar turmas disponíveis para aluno: " + e.getMessage());
+            throw new RuntimeException("Erro ao listar turmas disponíveis para o aluno: " + e.getMessage());
         } finally {
             conexao.closeConexao();
         }
         return lista;
     }
+
     
     public int countOcupadasPorCodigo(String codigoTurma) {
         Conexao conexao = new Conexao();
@@ -345,7 +332,7 @@ public class TurmaDAO implements Dao<Turma> {
         }
     }
     
-    public void duplicarTurmaParaNovoAluno(int idTurmaOriginal, int novoAlunoId) {
+ public void duplicarTurmaParaNovoAluno(int idTurmaOriginal, int novoAlunoId) {
         Turma original = get(idTurmaOriginal);
         if (original == null || original.getId() == 0) {
             throw new RuntimeException("Turma original não encontrada");
@@ -423,53 +410,85 @@ public class TurmaDAO implements Dao<Turma> {
         return lista;
     }
     
-    public ArrayList<Turma> getTurmasPorProfessorComAlunos(int professorId) {
-    ArrayList<Turma> lista = new ArrayList<>();
-    Conexao conexao = new Conexao();
+    public ArrayList<Turma> getTurmasDisponiveisParaAluno() {
+        ArrayList<Turma> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+        try {
+            String sql = 
+                "SELECT t.* " +
+                "FROM turmas t " +
+                "LEFT JOIN alunos a ON t.aluno_id = a.id " +
+                "WHERE t.aluno_id IS NULL OR t.aluno_id <> ? " +
+                "ORDER BY t.codigo_turma";
 
-    try {
-        String sql = 
-            "SELECT t.id AS turma_id, t.codigo_turma, t.disciplina_id, t.professor_id, " +
-            "       d.nome AS disciplina_nome, a.id AS aluno_id, a.nome AS aluno_nome, t.nota " +
-            "FROM turmas t " +
-            "JOIN disciplina d ON t.disciplina_id = d.id " +
-            "LEFT JOIN alunos a ON t.aluno_id = a.id " +
-            "WHERE t.professor_id = ? " +
-            "ORDER BY t.codigo_turma";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
-        PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
-        ps.setInt(1, professorId);
-        ResultSet rs = ps.executeQuery();
+            while (rs != null && rs.next()) {
+                Turma t = new Turma();
+                t.setId(rs.getInt("id"));
+                t.setProfessorId(rs.getInt("professor_id"));
+                t.setDisciplinaId(rs.getInt("disciplina_id"));
+                t.setAlunoId(rs.getInt("aluno_id"));
+                t.setCodigoTurma(rs.getString("codigo_turma"));
+                t.setNota(rs.getBigDecimal("nota"));
+                lista.add(t);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar turmas disponíveis para o aluno: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+        return lista;
+    }
+    
+     public ArrayList<Turma> getTurmasPorProfessorComAlunos(int professorId) {
+        ArrayList<Turma> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
 
-        Map<Integer, Turma> turmasMap = new HashMap<>();
+        try {
+            String sql = 
+                "SELECT t.id AS turma_id, t.codigo_turma, t.disciplina_id, t.professor_id, " +
+                "       d.nome AS disciplina_nome, a.id AS aluno_id, a.nome AS aluno_nome, t.nota " +
+                "FROM turmas t " +
+                "JOIN disciplina d ON t.disciplina_id = d.id " +
+                "LEFT JOIN alunos a ON t.aluno_id = a.id " +
+                "WHERE t.professor_id = ? " +
+                "ORDER BY t.codigo_turma";
 
-        while (rs.next()) {
-            int turmaId = rs.getInt("turma_id");
-            Turma turma = turmasMap.getOrDefault(turmaId, new Turma());
-            turma.setId(turmaId);
-            turma.setCodigoTurma(rs.getString("codigo_turma"));
-            turma.setProfessorId(rs.getInt("professor_id"));
-            turma.setDisciplinaId(rs.getInt("disciplina_id"));
-            turma.setDisciplinaNome(rs.getString("disciplina_nome"));
-            turma.setNota(rs.getBigDecimal("nota"));
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setInt(1, professorId);
+            ResultSet rs = ps.executeQuery();
 
-            String alunoNome = rs.getString("aluno_nome");
-            if (alunoNome != null) {
-                turma.addAlunoNome(alunoNome); 
+            Map<Integer, Turma> turmasMap = new HashMap<>();
+
+            while (rs.next()) {
+                int turmaId = rs.getInt("turma_id");
+                Turma turma = turmasMap.getOrDefault(turmaId, new Turma());
+                turma.setId(turmaId);
+                turma.setCodigoTurma(rs.getString("codigo_turma"));
+                turma.setProfessorId(rs.getInt("professor_id"));
+                turma.setDisciplinaId(rs.getInt("disciplina_id"));
+                turma.setDisciplinaNome(rs.getString("disciplina_nome"));
+                turma.setNota(rs.getBigDecimal("nota"));
+
+                String alunoNome = rs.getString("aluno_nome");
+                if (alunoNome != null) {
+                    turma.addAlunoNome(alunoNome); 
+                }
+
+                turmasMap.put(turmaId, turma);
             }
 
-            turmasMap.put(turmaId, turma);
+            lista.addAll(turmasMap.values());
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao listar turmas e alunos do professor: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
         }
-
-        lista.addAll(turmasMap.values());
-
-    } catch (SQLException e) {
-        throw new RuntimeException("Erro ao listar turmas e alunos do professor: " + e.getMessage());
-    } finally {
-        conexao.closeConexao();
+        return lista;
     }
-    return lista;
-}
 
     public void atualizarNota(int alunoId, BigDecimal nota) {
         Conexao conexao = new Conexao();

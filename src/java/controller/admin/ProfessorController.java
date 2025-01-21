@@ -79,53 +79,45 @@ public class ProfessorController extends HttpServlet {
 
         String btEnviar = request.getParameter("btEnviar");
         ProfessorDAO professorDAO = new ProfessorDAO();
-        TurmaDAO turmaDAO = new TurmaDAO();
 
-        if ("SalvarNota".equals(btEnviar)) {
-            int turmaId = Integer.parseInt(request.getParameter("turmaId"));
-            String[] alunoIds = request.getParameterValues("alunoId");
-            String[] notas = request.getParameterValues("nota");
-
-            try {
-                for (int i = 0; i < alunoIds.length; i++) {
-                    turmaDAO.atualizarNota(Integer.parseInt(alunoIds[i]), new BigDecimal(notas[i]));
-                }
-                response.sendRedirect("/admin/ProfessorController?acao=ListarTurmas&professorId=" + turmaId);
-            } catch (Exception ex) {
-                throw new RuntimeException("Erro ao salvar nota: " + ex.getMessage());
-            }
-        } else {
-            int id = Integer.parseInt(request.getParameter("id"));
+        try {
             String nome = request.getParameter("nome");
             String email = request.getParameter("email");
             String cpf = request.getParameter("cpf");
             String senha = request.getParameter("senha");
 
-            try {
-                if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
-                    throw new RuntimeException("Todos os campos são obrigatórios");
-                }
-
-                Professor professor = new Professor(id, nome, email, cpf, senha);
-
-                switch (btEnviar) {
-                    case "Incluir":
-                        professorDAO.inserir(professor);
-                        break;
-
-                    case "Alterar":
-                        professorDAO.update(professor);
-                        break;
-
-                    case "Excluir":
-                        professorDAO.delete(id);
-                        break;
-                }
-
-                response.sendRedirect("/admin/ProfessorController?acao=Listar");
-            } catch (Exception ex) {
-                throw new RuntimeException("Erro ao processar ação no ProfessorController: " + ex.getMessage());
+            if (nome.isEmpty() || email.isEmpty() || cpf.isEmpty() || senha.isEmpty()) {
+                throw new RuntimeException("Todos os campos são obrigatórios");
             }
+
+            Professor professor = new Professor();
+            professor.setNome(nome);
+            professor.setEmail(email);
+            professor.setCpf(cpf);
+            professor.setSenha(senha);
+
+            switch (btEnviar) {
+                case "Incluir":
+                    professorDAO.inserir(professor);
+                    break;
+
+                case "Alterar":
+                    int idAlterar = Integer.parseInt(request.getParameter("id"));
+                    professor.setId(idAlterar);
+                    professorDAO.update(professor);
+                    break;
+
+                case "Excluir":
+                    int idExcluir = Integer.parseInt(request.getParameter("id"));
+                    professorDAO.delete(idExcluir);
+                    break;
+            }
+
+            response.sendRedirect("/aplicacaoMVC/admin/ProfessorController?acao=Listar");
+        } catch (IOException | RuntimeException ex) {
+            request.setAttribute("msgError", "Erro ao processar a solicitação: " + ex.getMessage());
+            RequestDispatcher rd = request.getRequestDispatcher("/views/admin/professor/formProfessor.jsp");
+            rd.forward(request, response);
         }
     }
 }

@@ -48,11 +48,18 @@ public class InscricoesController extends HttpServlet {
                 break;
 
             case "Incluir":
-                ArrayList<Turma> turmasDisponiveis = turmaDAO.getVagasDisponiveis();
-                preencherNomes(turmasDisponiveis, professorDAO, disciplinaDAO);
+                ArrayList<Turma> turmasDisponiveis = turmaDAO.getTurmasDisponiveisParaAluno(alunoLogado.getId());
+
+                for (Turma turma : turmasDisponiveis) {
+                    if (turma.getProfessorId() != 0 && (turma.getProfessorNome() == null || turma.getProfessorNome().isEmpty())) {
+                        turma.setProfessorNome(professorDAO.get(turma.getProfessorId()).getNome());
+                    }
+                    if (turma.getDisciplinaId() != 0 && (turma.getDisciplinaNome() == null || turma.getDisciplinaNome().isEmpty())) {
+                        turma.setDisciplinaNome(disciplinaDAO.getDisciplina(turma.getDisciplinaId()).getNome());
+                    }
+                }
 
                 request.setAttribute("listaTurmas", turmasDisponiveis);
-                request.setAttribute("acao", "Incluir");
                 rd = request.getRequestDispatcher("/views/aluno/inscricao/formInscricao.jsp");
                 rd.forward(request, response);
                 break;
@@ -104,30 +111,47 @@ public class InscricoesController extends HttpServlet {
 
             String btEnviar = request.getParameter("btEnviar");
             TurmaDAO turmaDAO = new TurmaDAO();
-
+            RequestDispatcher rd;
+            
             switch (btEnviar) {
                 case "Incluir":
                     int idTurma = Integer.parseInt(request.getParameter("id"));
-                    Turma turmaIncluir = turmaDAO.get(idTurma);
-
-                    if (turmaIncluir == null || turmaIncluir.getId() == 0) {
-                        request.setAttribute("msgOperacaoRealizada", "Turma inválida.");
+                    try {
+                        turmaDAO.duplicarTurmaParaNovoAluno(idTurma, alunoLogado.getId());
+                        request.setAttribute("msgOperacaoRealizada", "Inscrição realizada com sucesso!");
                         request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
-                        RequestDispatcher rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
                         rd.forward(request, response);
-                        return;
+                    } catch (IOException | ServletException ex) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro ao realizar inscrição: " + ex.getMessage());
+                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Incluir");
+                        rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rd.forward(request, response);
                     }
-
-                    turmaDAO.duplicarTurmaParaNovoAluno(idTurma, alunoLogado.getId());
-
-                    request.setAttribute("msgOperacaoRealizada", "Inscrição realizada com sucesso!");
-                    request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
-                    RequestDispatcher rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
-                    rd.forward(request, response);
                     break;
 
                 case "Excluir":
-                    // Implementação para excluir
+                    int idTurmaExcluir = Integer.parseInt(request.getParameter("id"));
+                    Turma turmaRemover = turmaDAO.get(idTurmaExcluir);
+                    if (turmaRemover.getNota().compareTo(BigDecimal.ZERO) > 0) {
+                        request.setAttribute("msgOperacaoRealizada", "Não é possível remover inscrição após lançamento de nota!");
+                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
+                        RequestDispatcher rdEx = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rdEx.forward(request, response);
+                        return;
+                    }
+                    if (turmaRemover.getAlunoId() != alunoLogado.getId()) {
+                        request.setAttribute("msgOperacaoRealizada", "Você não está inscrito nessa turma!");
+                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
+                        RequestDispatcher rdEx = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rdEx.forward(request, response);
+                        return;
+                    }
+                    turmaDAO.removerAluno(idTurmaExcluir);
+                    request.setAttribute("msgOperacaoRealizada", "Inscrição removida com sucesso!");
+                    request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
+                    RequestDispatcher rdEx = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                    rdEx.forward(request, response);
                     break;
 
                 default:

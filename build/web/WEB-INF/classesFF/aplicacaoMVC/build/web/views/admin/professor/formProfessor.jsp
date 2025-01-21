@@ -68,7 +68,6 @@
                             <a href="/aplicacaoMVC/admin/ProfessorController?acao=Listar" class="btn btn-danger">Retornar</a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>

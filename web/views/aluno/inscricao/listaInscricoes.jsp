@@ -48,7 +48,7 @@
                                         out.println("<td>" + turma.getCodigoTurma() + "</td>");
                                         out.println("<td>" + turma.getProfessorNome() + "</td>");
                                         out.println("<td>" + turma.getDisciplinaNome() + "</td>");
-                                        out.println("<td>" + turma.getNota().divide(new BigDecimal("10")) + "</td>");
+                                        out.println("<td>" + turma.getNota() + "</td>");
                             %>
                             <td>
                                 <a href="/aplicacaoMVC/aluno/InscricoesController?acao=Excluir&id=<%=turma.getId()%>"

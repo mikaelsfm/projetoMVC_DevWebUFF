@@ -57,7 +57,8 @@
                                     <td>
                                         <form action="/aplicacaoMVC/aluno/InscricoesController" method="POST">
                                             <input type="hidden" name="id" value="<%= t.getId() %>">
-                                            <input type="submit" name="btEnviar" value="Incluir" class="btn btn-primary btn-sm">
+                                            <input type="hidden" name="btEnviar" value="Incluir">
+                                            <button type="submit" class="btn btn-primary btn-sm">Inscrever-se</button>
                                         </form>
                                     </td>
                                 </tr>

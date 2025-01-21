@@ -49,17 +49,19 @@ public class ProfessorDAO implements Dao<Professor> {
     }
 
     @Override
-    public void inserir(Professor professor) {
+        public void inserir(Professor professor) {
         Conexao conexao = new Conexao();
         try {
-            PreparedStatement sql = conexao.getConexao().prepareStatement("INSERT INTO professores (nome, email, cpf, senha) VALUES (?, ?, ?, ?)");
+            PreparedStatement sql = conexao.getConexao().prepareStatement(
+                "INSERT INTO professores (nome, email, cpf, senha) VALUES (?, ?, ?, ?)"
+            );
             sql.setString(1, professor.getNome());
             sql.setString(2, professor.getEmail());
             sql.setString(3, professor.getCpf());
             sql.setString(4, professor.getSenha());
             sql.executeUpdate();
         } catch (SQLException e) {
-            System.err.println("Query de insert (professor) incorreta");
+            throw new RuntimeException("Erro ao inserir professor", e);
         } finally {
             conexao.closeConexao();
         }
