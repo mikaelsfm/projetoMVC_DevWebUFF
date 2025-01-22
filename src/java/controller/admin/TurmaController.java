@@ -171,18 +171,29 @@ public class TurmaController extends HttpServlet {
             switch (btEnviar) {
                 case "Incluir":
                     TurmaDAO turmaDAOIncluir = new TurmaDAO();
-                    int totalTurmas = turmaDAOIncluir.countTurmasPorProfessor(professorId);
 
-                    if (totalTurmas >= 2) {
-                        request.setAttribute("msgOperacaoRealizada", "Erro: O professor já está associado a 2 turmas. Não é possível adicionar outra.");
-                        request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
-                        RequestDispatcher rdErro = request.getRequestDispatcher("/views/comum/showMessage.jsp");
-                        rdErro.forward(request, response);
-                        return;
+                    boolean existeCodigo = turmaDAOIncluir.existeCodigoTurmaParaProfessorEDisciplina(professorId, disciplinaId, codigoTurma);
+
+                    if (!existeCodigo) {
+                        int totalCodigosDistintos = turmaDAOIncluir.countTurmasPorProfessor(professorId);
+
+                        if (totalCodigosDistintos >= 2) {
+                            request.setAttribute("msgOperacaoRealizada", "Erro: O professor já possui 2 turmas distintas. Não é possível adicionar outra.");
+                            request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                            RequestDispatcher rdErro = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                            rdErro.forward(request, response);
+                            return;
+                        }
                     }
-
-                    turmaDAO.inserir(turma);
+                    try {    
+                    turmaDAOIncluir.inserir(turma);
                     request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
+                    } catch (RuntimeException ex) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro: " + ex.getMessage());
+                    }
+                    request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                    RequestDispatcher rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                    rd.forward(request, response);
                     break;
 
                 case "Alterar":
@@ -197,8 +208,15 @@ public class TurmaController extends HttpServlet {
                         return;
                     }
 
-                    turmaDAO.update(turma);
-                    request.setAttribute("msgOperacaoRealizada", "Alteração realizada com sucesso");
+                    try {
+                        turmaDAO.update(turma);
+                        request.setAttribute("msgOperacaoRealizada", "Turma alterada com sucesso!");
+                    } catch (RuntimeException ex) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro: " + ex.getMessage());
+                    }
+                    request.setAttribute("link", "/aplicacaoMVC/admin/TurmaController?acao=Listar");
+                    rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                    rd.forward(request, response);
                     break;
 
                 case "Excluir":

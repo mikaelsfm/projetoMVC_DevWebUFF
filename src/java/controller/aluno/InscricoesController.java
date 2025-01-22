@@ -119,15 +119,12 @@ public class InscricoesController extends HttpServlet {
                     try {
                         turmaDAO.duplicarTurmaParaNovoAluno(idTurma, alunoLogado.getId());
                         request.setAttribute("msgOperacaoRealizada", "Inscrição realizada com sucesso!");
-                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
-                        rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
-                        rd.forward(request, response);
-                    } catch (IOException | ServletException ex) {
-                        request.setAttribute("msgOperacaoRealizada", "Erro ao realizar inscrição: " + ex.getMessage());
-                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Incluir");
-                        rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
-                        rd.forward(request, response);
+                    } catch (RuntimeException ex) {
+                        request.setAttribute("msgOperacaoRealizada", "Erro: " + ex.getMessage());
                     }
+                    request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
+                    rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                    rd.forward(request, response);
                     break;
 
                 case "Excluir":

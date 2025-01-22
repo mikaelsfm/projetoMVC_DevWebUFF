@@ -84,7 +84,7 @@ public class LancarNotasController extends HttpServlet {
 
             TurmaDAO turmaDAO = new TurmaDAO();
 
-            boolean isTurmaDoProfessor = turmaDAO.verificarTurmaDoProfessor(turmaId, professorLogado.getId());
+            boolean isTurmaDoProfessor = turmaDAO.isTurmaDoProfessor(turmaId, professorLogado.getId());
             if (!isTurmaDoProfessor) {
                 throw new RuntimeException("A turma selecionada não pertence ao professor.");
             }
