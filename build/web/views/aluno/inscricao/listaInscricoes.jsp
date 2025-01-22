@@ -1,3 +1,4 @@
+<%@page import="entidade.Aluno"%>
 <%@page import="java.math.BigDecimal"%>
 <%@page import="entidade.Turma"%>
 <%@page import="java.util.ArrayList"%>
@@ -37,6 +38,16 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div>
         <h1 class="mb-0">Área Restrita (Aluno)</h1>
+        <h3 class="mb-0 mt-2 text-muted">
+        <%
+          Aluno alunoLogado = (Aluno) session.getAttribute("aluno");
+          if (alunoLogado != null) {
+              out.print(alunoLogado.getNome());
+          } else {
+              out.print("Aluno não identificado");
+          }
+        %>
+      </h3>
         <p class="text-muted">Minhas Inscrições</p>
       </div>
       <a href="/aplicacaoMVC/aluno/InscricoesController?acao=Incluir" class="btn btn-success">
@@ -60,7 +71,7 @@
           <%
             ArrayList<Turma> listaTurmas = (ArrayList<Turma>) request.getAttribute("listaTurmas");
             if (listaTurmas != null) {
-              for (Turma turma : listaTurmas) {
+                for (Turma turma : listaTurmas) {
           %>
           <tr>
             <th><%= turma.getId() %></th>

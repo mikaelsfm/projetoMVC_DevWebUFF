@@ -40,7 +40,7 @@ public class InscricoesController extends HttpServlet {
         switch (acao) {
             case "Listar":
                 ArrayList<Turma> listaTurmasAluno = turmaDAO.getAllDoAluno(alunoLogado.getId());
-                preencherNomes(listaTurmasAluno, professorDAO, disciplinaDAO);
+                preencherNomes(listaTurmasAluno, professorDAO, disciplinaDAO); // Adiciona os nomes
 
                 request.setAttribute("listaTurmas", listaTurmasAluno);
                 rd = request.getRequestDispatcher("/views/aluno/inscricao/listaInscricoes.jsp");
@@ -58,6 +58,8 @@ public class InscricoesController extends HttpServlet {
                         turma.setDisciplinaNome(disciplinaDAO.getDisciplina(turma.getDisciplinaId()).getNome());
                     }
                 }
+                
+                preencherNomes(turmasDisponiveis, professorDAO, disciplinaDAO);
 
                 request.setAttribute("listaTurmas", turmasDisponiveis);
                 rd = request.getRequestDispatcher("/views/aluno/inscricao/formInscricao.jsp");
@@ -112,10 +114,21 @@ public class InscricoesController extends HttpServlet {
             String btEnviar = request.getParameter("btEnviar");
             TurmaDAO turmaDAO = new TurmaDAO();
             RequestDispatcher rd;
-            
+
             switch (btEnviar) {
                 case "Incluir":
                     int idTurma = Integer.parseInt(request.getParameter("id"));
+
+                    int totalTurmasAluno = turmaDAO.countTurmasPorAluno(alunoLogado.getId());
+                    if (totalTurmasAluno >= 2) {
+                        request.setAttribute("msgOperacaoRealizada", 
+                            "Erro: Você já está inscrito em duas turmas. Não é possível se inscrever em mais.");
+                        request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
+                        rd = request.getRequestDispatcher("/views/comum/showMessage.jsp");
+                        rd.forward(request, response);
+                        return;
+                    }
+
                     try {
                         turmaDAO.duplicarTurmaParaNovoAluno(idTurma, alunoLogado.getId());
                         request.setAttribute("msgOperacaoRealizada", "Inscrição realizada com sucesso!");
@@ -131,7 +144,8 @@ public class InscricoesController extends HttpServlet {
                     int idTurmaExcluir = Integer.parseInt(request.getParameter("id"));
                     Turma turmaRemover = turmaDAO.get(idTurmaExcluir);
                     if (turmaRemover.getNota().compareTo(BigDecimal.ZERO) > 0) {
-                        request.setAttribute("msgOperacaoRealizada", "Não é possível remover inscrição após lançamento de nota!");
+                        request.setAttribute("msgOperacaoRealizada", 
+                            "Não é possível remover inscrição após lançamento de nota!");
                         request.setAttribute("link", "/aplicacaoMVC/aluno/InscricoesController?acao=Listar");
                         RequestDispatcher rdEx = request.getRequestDispatcher("/views/comum/showMessage.jsp");
                         rdEx.forward(request, response);
@@ -160,6 +174,7 @@ public class InscricoesController extends HttpServlet {
             rd.forward(request, response);
         }
     }
+
 
     private void preencherNomes(ArrayList<Turma> listaTurmas, ProfessorDAO professorDAO, DisciplinaDAO disciplinaDAO) {
         for (Turma turma : listaTurmas) {

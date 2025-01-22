@@ -101,7 +101,7 @@ public class AutenticaController extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("aluno", alunoObtido);
 
-                rd = request.getRequestDispatcher("/views/admin/dashboard/areaRestritaAluno.jsp");
+                rd = request.getRequestDispatcher("/views/aluno/dashboard/areaRestritaAluno.jsp");
                 rd.forward(request, response);
 
             } else {
@@ -127,7 +127,7 @@ public class AutenticaController extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("professor", professorObtido);
 
-                rd = request.getRequestDispatcher("/views/admin/dashboard/areaRestritaProfessor.jsp");
+                rd = request.getRequestDispatcher("/views/professor/dashboard/areaRestritaProfessor.jsp");
                 rd.forward(request, response);
 
             } else {

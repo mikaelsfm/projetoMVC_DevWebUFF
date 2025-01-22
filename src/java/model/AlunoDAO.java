@@ -198,4 +198,33 @@ public class AlunoDAO implements Dao<Aluno> {
 
         return lista;
     }
+    
+    public ArrayList<Aluno> getAlunosPorCodigoTurmaEDisciplina(String codigoTurma, int disciplinaId) {
+        ArrayList<Aluno> lista = new ArrayList<>();
+        Conexao conexao = new Conexao();
+
+        try {
+            String sql = "SELECT a.* FROM alunos a " +
+                         "JOIN turmas t ON a.id = t.aluno_id " +
+                         "WHERE t.codigo_turma = ? AND t.disciplina_id = ?";
+            PreparedStatement ps = conexao.getConexao().prepareStatement(sql);
+            ps.setString(1, codigoTurma);
+            ps.setInt(2, disciplinaId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Aluno aluno = new Aluno();
+                aluno.setId(rs.getInt("id"));
+                aluno.setNome(rs.getString("nome"));
+                aluno.setEmail(rs.getString("email"));
+                lista.add(aluno);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar alunos por código da turma e disciplina: " + e.getMessage());
+        } finally {
+            conexao.closeConexao();
+        }
+
+        return lista;
+    }
 }

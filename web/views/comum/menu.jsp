@@ -27,17 +27,14 @@
                                             <a class="nav-link" href="/aplicacaoMVC/common/logOut">Logout</a>
                                 <%
                                         } else if (alunoLogado != null) {
-                                %>
-                                            <a class="nav-link" href="/aplicacaoMVC/aluno/InscricoesController?acao=Listar">
-                                                Minhas Inscrições
-                                            </a>
-                                            <a class="nav-link" href="/aplicacaoMVC/aluno/InscricoesController?acao=Incluir">
-                                                Inscrever em Disciplina/Turma
-                                            </a>
+                                %>          
+                                            <a class="nav-link" href="/aplicacaoMVC/aluno/InscricoesController?acao=Listar">Minhas Inscrições</a>
+                                            <a class="nav-link" href="/aplicacaoMVC/aluno/InscricoesController?acao=Incluir">Inscrever em Disciplina/Turma</a>
                                             <a class="nav-link" href="/aplicacaoMVC/common/logOut">Logout</a>
                                 <%
                                         } else if (professorLogado != null) {
                                 %>
+                                          
                                             <a class="nav-link" href="/aplicacaoMVC/professor/LancarNotasController?acao=Listar">
                                                 Lançar Notas
                                             </a>
