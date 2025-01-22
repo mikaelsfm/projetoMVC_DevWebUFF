@@ -49,10 +49,7 @@
                 <label for="senha" class="form-label">Senha</label>
                 <input type="password" name="senha" value="111" class="form-control">
               </div>
-              <div class="d-flex justify-content-between align-items-center">
-                <input type="submit" value="Enviar" class="btn btn-primary">
-                <small><a href="/aplicacaoMVC/RegistrarController">Não possui acesso? Registre-se aqui</a></small>
-              </div>
+              <input type="submit" value="Enviar" class="btn btn-primary">
             </form>
           </div>
         </div>

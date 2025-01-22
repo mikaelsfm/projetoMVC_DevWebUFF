@@ -11,7 +11,7 @@
     <title>Relatório de Disciplinas e Turmas</title>
 </head>
 <body>
-    <div class="container my-5">
+    <div class="container mb-5">
         <jsp:include page="../../comum/menu.jsp" />
         <div class="card mt-5">
             <div class="card-header bg-primary text-white">

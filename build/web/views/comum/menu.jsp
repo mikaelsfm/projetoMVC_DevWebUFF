@@ -23,7 +23,6 @@
                                             <a class="nav-link" href="/aplicacaoMVC/admin/DisciplinaController?acao=Listar">Disciplinas</a>
                                             <a class="nav-link" href="/aplicacaoMVC/admin/TurmaController?acao=Listar">Turmas</a>
                                             <a class="nav-link" href="/aplicacaoMVC/admin/RelatorioController?acao=Listar">Relatório</a>
-                                            <a class="nav-link" href="/aplicacaoMVC/admin/CategoriaController?acao=Listar">Categorias</a>
                                             <a class="nav-link" href="/aplicacaoMVC/common/logOut">Logout</a>
                                 <%
                                         } else if (alunoLogado != null) {
@@ -45,7 +44,6 @@
                                 <%
                                         }  else {
                                 %>
-                                            <a class="nav-link" href="/aplicacaoMVC/MostrarComentarios">Comentários</a>
                                             <a class="nav-link" href="/aplicacaoMVC/AutenticaController?acao=Login">Login</a>
                                 <%
                                         }
